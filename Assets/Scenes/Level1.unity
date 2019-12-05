@@ -187,16 +187,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: RocketShip
       objectReference: {fileID: 0}
-    - target: {fileID: 2755721188509338865, guid: 548e22ad9a254473384b68505a7a8276,
-        type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 07233b0ab3773407fba93a10b2a6c57d, type: 3}
-    - target: {fileID: 2755721188509338865, guid: 548e22ad9a254473384b68505a7a8276,
-        type: 3}
-      propertyPath: m_Pitch
-      value: 0.8
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 548e22ad9a254473384b68505a7a8276, type: 3}
 --- !u!1001 &2935668152950242186
@@ -219,17 +209,17 @@ PrefabInstance:
     - target: {fileID: 2935668154297341910, guid: 8e19b85a2d6394168bafe5f287986019,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.61
+      value: 15.56
       objectReference: {fileID: 0}
     - target: {fileID: 2935668154297341910, guid: 8e19b85a2d6394168bafe5f287986019,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -13.35
+      value: -23.92
       objectReference: {fileID: 0}
     - target: {fileID: 2935668154297341910, guid: 8e19b85a2d6394168bafe5f287986019,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.09808459
+      value: 0.1415688
       objectReference: {fileID: 0}
     - target: {fileID: 2935668154297341910, guid: 8e19b85a2d6394168bafe5f287986019,
         type: 3}
@@ -244,7 +234,7 @@ PrefabInstance:
     - target: {fileID: 2935668154297341910, guid: 8e19b85a2d6394168bafe5f287986019,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9951781
+      value: 0.9899285
       objectReference: {fileID: 0}
     - target: {fileID: 2935668154297341910, guid: 8e19b85a2d6394168bafe5f287986019,
         type: 3}
@@ -254,7 +244,7 @@ PrefabInstance:
     - target: {fileID: 2935668154297341910, guid: 8e19b85a2d6394168bafe5f287986019,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 11.258
+      value: 16.277
       objectReference: {fileID: 0}
     - target: {fileID: 2935668154297341910, guid: 8e19b85a2d6394168bafe5f287986019,
         type: 3}
