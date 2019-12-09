@@ -5,71 +5,39 @@ using UnityEngine;
 
 public class Rocket : MonoBehaviour
 {
-    public float ThrustSpeed;
-    public float RotateSpeed;
-    new Rigidbody rigidbody;
-    AudioSource audioSource;
-    
- 
+    [SerializeField]
+    private string reactWithBadTag;
+
+    private Vector3 startingPosition;
+    private Quaternion startingRotation;
+
     // Start is called before the first frame update
     void Start()
-    {
-        rigidbody = GetComponent<Rigidbody>();
-        audioSource = GetComponent<AudioSource>();
+    {  
+        startingPosition = gameObject.transform.position;
+        startingRotation = gameObject.transform.rotation;
     }
 
     // Update is called once per frame
     void Update()
     {
-        ProcessInput();   
+         
     }
 
-    private void ProcessInput()
+    public void OnCollisionEnter(Collision collision)
     {
-        if (Input.GetKey(KeyCode.Space))
+        print("collided");
+        
+        string colliderTag = collision.gameObject.tag;
+        print(colliderTag);
+
+        if (reactWithBadTag == colliderTag)
         {
-            Thrust();
+            print("You died");
+
+            gameObject.transform.rotation = startingRotation;
+            gameObject.transform.position = startingPosition;
+            gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
         }
-        else
-        {
-            StopThrust();
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            Rotate(Rotation.Left);
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            Rotate(Rotation.Right);
-        }
-
-
     }
-
-    private void Rotate(Rotation rotation)
-    {
-        var rotateVelocity = new Vector3(0, 0, RotateSpeed * (rotation == Rotation.Left ? 1 : -1) * Time.deltaTime);
-        transform.Rotate(rotateVelocity);
-    }
-
-    private void Thrust()
-    {
-        if (!audioSource.isPlaying)
-        {
-            audioSource.Play();
-        } 
-
-        var thrustVelocity = new Vector3(0, ThrustSpeed, 0);
-        rigidbody.AddRelativeForce(thrustVelocity);
-    }
-
-    private void StopThrust()
-    {
-        audioSource.Stop();
-    }
-
-   
-
 }
-
-enum Rotation { Left, Right };

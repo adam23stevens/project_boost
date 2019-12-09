@@ -10,6 +10,8 @@ public class Thruster : MonoBehaviour
     public KeyCode ThrustKey;
     new Rigidbody rigidbody;
     AudioSource audioSource;
+
+    private bool _isBoostThrust = false;
     
  
     // Start is called before the first frame update
@@ -27,6 +29,7 @@ public class Thruster : MonoBehaviour
 
     private void ProcessInput()
     {
+        _isBoostThrust = Input.GetKey(KeyCode.LeftShift);
         if (Input.GetKey(ThrustKey))
         {
             Thrust();
@@ -41,12 +44,14 @@ public class Thruster : MonoBehaviour
 
     private void Thrust()
     {
+        print("thrusting");
         if (!audioSource.isPlaying)
         {
             audioSource.Play();
-        } 
+        }
 
-        var thrustVelocity = new Vector3(0, ThrustSpeed, 0);
+        var thrustSpeed = _isBoostThrust ? 80 : ThrustSpeed;
+        var thrustVelocity = new Vector3(0, thrustSpeed, 0);
         rigidbody.AddRelativeForce(thrustVelocity);
     }
 
