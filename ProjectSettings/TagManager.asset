@@ -4,9 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Friendly
-  - bad
   - Bad
+  - Friendly
+  - Landing
   layers:
   - Default
   - TransparentFX

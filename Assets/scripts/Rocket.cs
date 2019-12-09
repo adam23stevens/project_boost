@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Rocket : MonoBehaviour
 {
@@ -26,18 +27,20 @@ public class Rocket : MonoBehaviour
 
     public void OnCollisionEnter(Collision collision)
     {
-        print("collided");
-        
         string colliderTag = collision.gameObject.tag;
         print(colliderTag);
 
         if (reactWithBadTag == colliderTag)
         {
-            print("You died");
-
+            SceneManager.LoadScene(0);
             gameObject.transform.rotation = startingRotation;
             gameObject.transform.position = startingPosition;
             gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+        }
+
+        if (colliderTag == "Landing")
+        {
+            SceneManager.LoadScene(1);
         }
     }
 }
