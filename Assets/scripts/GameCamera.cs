@@ -16,7 +16,7 @@ public class GameCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Debug.isDebugBuild &&  Input.GetKeyUp(DEBUG_SKIP_LEVEL))
+        if (Debug.isDebugBuild && Input.GetKeyUp(DEBUG_SKIP_LEVEL))
         {
             SceneManager.LoadScene(1);
         }

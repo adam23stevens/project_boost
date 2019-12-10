@@ -16,11 +16,19 @@ public class Rocket : MonoBehaviour
     private AudioClip deathClip;
     [SerializeField]
     private AudioClip successClip;
+    [SerializeField]
+    private float thrustSpeed;
+    [SerializeField]
+    private float rotateSpeed;
 
     [SerializeField]
     private ParticleSystem failureParticle;
     [SerializeField]
     private ParticleSystem successParticle;
+    [SerializeField]
+    private ParticleSystem thrustParticle_left;
+    [SerializeField]
+    private ParticleSystem thrustParticle_right;
 
     public enum State {Alive, Dying, Transcending };
     public State state = State.Alive;
@@ -28,24 +36,61 @@ public class Rocket : MonoBehaviour
     private bool isPlayingSound;
     private bool isDebugCollision;
     private AudioSource audioSource;
+    private new Rigidbody rigidbody;
     private string isDebugCollisionString => isDebugCollision && Debug.isDebugBuild ? "ON" : "OFF";
-    
+
+
+    private bool isThrustLeft =>
+        Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D);
+
+    private bool isThrustRight =>
+        Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.A);
+
+    private bool isThrustingUp =>
+        Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D);
 
     // Start is called before the first frame update
     void Start()
-    {
+    { 
         audioSource = GetComponent<AudioSource>();
-        
+        rigidbody = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
-         if (Input.GetKeyUp(DEBUG_SWITCH_COLLISION))
+        if (Input.GetKeyUp(DEBUG_SWITCH_COLLISION))
         {
             isDebugCollision = !isDebugCollision;
             print($"Debug Collision {isDebugCollisionString}");
         }
+
+        if (isThrustLeft)
+        {
+            transform.Rotate(0, 0, -rotateSpeed * Time.deltaTime);
+            SoundThrust();
+            thrustParticle_left.Play();
+        }
+        else if (isThrustRight)
+        {
+            transform.Rotate(0, 0, rotateSpeed * Time.deltaTime);
+            SoundThrust();
+            thrustParticle_right.Play();
+        }
+        else if (isThrustingUp)
+        {
+            rigidbody.velocity += transform.up * Time.deltaTime * thrustSpeed;
+            SoundThrust();
+            thrustParticle_left.Play();
+            thrustParticle_right.Play();
+        }
+        else
+        {
+            thrustParticle_left.Stop();
+            thrustParticle_right.Stop();
+            StopSoundThrust();
+        }
+        
     }
 
     public void OnCollisionEnter(Collision collision)
@@ -65,7 +110,7 @@ public class Rocket : MonoBehaviour
         }
     }
 
-    public void Thrust() 
+    public void SoundThrust() 
     {
         if (!isPlayingSound)
         {
@@ -74,7 +119,7 @@ public class Rocket : MonoBehaviour
         }
      }
     
-    public void StopThrust()
+    public void StopSoundThrust()
     {
         audioSource.Stop();
         isPlayingSound = false;

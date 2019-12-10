@@ -51,7 +51,7 @@ public class Thruster : MonoBehaviour
 
     private void Thrust()
     {
-        rocket.Thrust();
+       // rocket.Thrust();
 
         var thrustSpeed = _isBoostThrust ? 80 : ThrustSpeed;
         
@@ -63,7 +63,7 @@ public class Thruster : MonoBehaviour
 
     private void StopThrust()
     {
-        rocket.StopThrust();
+       // rocket.StopThrust();
 
         engineParticle.Stop();
     }
