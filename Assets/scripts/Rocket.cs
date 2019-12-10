@@ -7,40 +7,114 @@ using UnityEngine.SceneManagement;
 public class Rocket : MonoBehaviour
 {
     [SerializeField]
+    KeyCode DEBUG_SWITCH_COLLISION;
+    [SerializeField]
     private string reactWithBadTag;
+    [SerializeField]
+    private AudioClip engineClip;
+    [SerializeField]
+    private AudioClip deathClip;
+    [SerializeField]
+    private AudioClip successClip;
 
-    private Vector3 startingPosition;
-    private Quaternion startingRotation;
+    [SerializeField]
+    private ParticleSystem failureParticle;
+    [SerializeField]
+    private ParticleSystem successParticle;
+
+    public enum State {Alive, Dying, Transcending };
+    public State state = State.Alive;
+
+    private bool isPlayingSound;
+    private bool isDebugCollision;
+    private AudioSource audioSource;
+    private string isDebugCollisionString => isDebugCollision && Debug.isDebugBuild ? "ON" : "OFF";
+    
 
     // Start is called before the first frame update
     void Start()
-    {  
-        startingPosition = gameObject.transform.position;
-        startingRotation = gameObject.transform.rotation;
+    {
+        audioSource = GetComponent<AudioSource>();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-         
+         if (Input.GetKeyUp(DEBUG_SWITCH_COLLISION))
+        {
+            isDebugCollision = !isDebugCollision;
+            print($"Debug Collision {isDebugCollisionString}");
+        }
     }
 
     public void OnCollisionEnter(Collision collision)
     {
-        string colliderTag = collision.gameObject.tag;
-        print(colliderTag);
+        if (state != State.Alive || isDebugCollision) return;
 
-        if (reactWithBadTag == colliderTag)
+        string colliderTag = collision.gameObject.tag;
+        
+        if (colliderTag == reactWithBadTag)
         {
-            SceneManager.LoadScene(0);
-            gameObject.transform.rotation = startingRotation;
-            gameObject.transform.position = startingPosition;
-            gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+            ProcessDeath();
         }
 
         if (colliderTag == "Landing")
         {
-            SceneManager.LoadScene(1);
+            ProcessSuccess();
         }
     }
+
+    public void Thrust() 
+    {
+        if (!isPlayingSound)
+        {
+            audioSource.PlayOneShot(engineClip);
+            isPlayingSound = true;
+        }
+     }
+    
+    public void StopThrust()
+    {
+        audioSource.Stop();
+        isPlayingSound = false;
+    }
+
+    private void ProcessDeath()
+    {
+        state = State.Dying;
+        Invoke("ReloadScene", 1f);
+
+        audioSource.Stop();
+        audioSource.PlayOneShot(deathClip);
+
+        failureParticle.Play();
+    }
+
+
+    private void ProcessSuccess()
+    {
+        state = State.Transcending;
+        Invoke("LoadNextScene", 1f);
+
+        audioSource.Stop();
+        audioSource.PlayOneShot(successClip);
+
+        successParticle.Play();
+    }
+
+    private void ReloadScene()
+    {
+        var activeSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(activeSceneIndex);
+    }
+
+    private void LoadNextScene()
+    {
+        var activeSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        
+        SceneManager.LoadScene(1);
+        
+        SceneManager.LoadScene(0);
+     }
 }

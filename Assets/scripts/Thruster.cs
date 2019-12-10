@@ -6,10 +6,14 @@ using UnityEngine;
 
 public class Thruster : MonoBehaviour
 {
+    [SerializeField]
+    private ParticleSystem engineParticle;
+
     public float ThrustSpeed;
     public KeyCode ThrustKey;
     new Rigidbody rigidbody;
-    AudioSource audioSource;
+    
+    public Rocket rocket;
 
     private bool _isBoostThrust = false;
     
@@ -17,14 +21,17 @@ public class Thruster : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rigidbody = GetComponent<Rigidbody>();
-        audioSource = GetComponent<AudioSource>();
+        rigidbody = GetComponent<Rigidbody>();        
     }
 
     // Update is called once per frame
     void Update()
     {
-        ProcessInput();   
+        if (rocket.state == Rocket.State.Alive)
+        {
+            ProcessInput();
+        }
+        
     }
 
     private void ProcessInput()
@@ -44,20 +51,21 @@ public class Thruster : MonoBehaviour
 
     private void Thrust()
     {
-        print("thrusting");
-        if (!audioSource.isPlaying)
-        {
-            audioSource.Play();
-        }
+        rocket.Thrust();
 
         var thrustSpeed = _isBoostThrust ? 80 : ThrustSpeed;
+        
         var thrustVelocity = new Vector3(0, thrustSpeed, 0);
         rigidbody.AddRelativeForce(thrustVelocity);
+
+        engineParticle.Play();
     }
 
     private void StopThrust()
     {
-        audioSource.Stop();
+        rocket.StopThrust();
+
+        engineParticle.Stop();
     }
 
    
