@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Logic;
-using entities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -51,9 +49,7 @@ public class Rocket : MonoBehaviour
     private bool isThrustingUp =>
         Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D);
 
-    private Recorder recorder => GetComponent<Recorder>();
-    private List<PlayerAction> playerActions;
-
+    private bool IsPlayingBack;
 
     // Start is called before the first frame update
     void Start()
@@ -65,40 +61,6 @@ public class Rocket : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.R))
-        {
-            recorder.Record();
-        }
-        if (Input.GetKey(KeyCode.P))
-        {
-            if (isPlayingMoves) return;
-
-            Invoke("StopPlayback", 5f);
-            isPlayingMoves = true;
-
-            playerActions = recorder.GetPlayerActions();
-
-            foreach(var playerAction in playerActions)
-            {
-                print($"{playerAction.ActionType} " +
-                      $"- {playerAction.StartTime.ToShortTimeString()} " +
-                      $"- {playerAction.EndTime.ToShortTimeString()}");
-                
-                switch(playerAction.ActionType)
-                {
-                    case ActionType.RotateLeft:
-                        InvokeRepeating("RotateLeft", 0f, 0.001f);
-                        break;
-                    case ActionType.RotateRight:
-                        InvokeRepeating("RotateRight", 0f, 0.001f);
-                        break;
-                    case ActionType.Thrust:
-                        InvokeRepeating("Thrust", 0f, 0.001f);
-                        break;
-                }
-            }
-        }
-
         if (Input.GetKeyUp(DEBUG_SWITCH_COLLISION))
         {
             isDebugCollision = !isDebugCollision;
@@ -107,24 +69,20 @@ public class Rocket : MonoBehaviour
 
         if (isThrustLeft)
         {
-            RotateLeft();
-            SoundThrust();
-            thrustParticle_left.Play();
+            IsPlayingBack = false;
+            Invoke("RotateLeft", 5f);
         }
         else if (isThrustRight)
         {
-            RotateRight();
-            SoundThrust();
-            thrustParticle_right.Play();
+            IsPlayingBack = false;
+            Invoke("RotateRight", 5f);
         }
         else if (isThrustingUp)
         {
-            Thrust();
-            SoundThrust();
-            thrustParticle_left.Play();
-            thrustParticle_right.Play();
+            IsPlayingBack = false;
+            Invoke("Thrust", 5f);
         }
-        else
+        else if (!IsPlayingBack)
         {
             thrustParticle_left.Stop();
             thrustParticle_right.Stop();
@@ -135,15 +93,25 @@ public class Rocket : MonoBehaviour
 
     private void RotateLeft()
     {
+        IsPlayingBack = true;
         transform.Rotate(0, 0, -rotateSpeed * Time.deltaTime);
+        SoundThrust();
+        thrustParticle_left.Play();
     }
     private void RotateRight()
     {
+        IsPlayingBack = true;
         transform.Rotate(0, 0, rotateSpeed * Time.deltaTime);
+        SoundThrust();
+        thrustParticle_right.Play();
     }
     private void Thrust()
     {
+        IsPlayingBack = true;
         rigidbody.velocity += transform.up * Time.deltaTime * thrustSpeed;
+        SoundThrust();
+        thrustParticle_left.Play();
+        thrustParticle_right.Play();
     }
 
     private void StopPlayback()
