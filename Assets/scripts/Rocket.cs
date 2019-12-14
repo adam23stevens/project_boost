@@ -131,6 +131,11 @@ public class Rocket : MonoBehaviour
             ProcessDeath();
         }
 
+        if (colliderTag == "Target")
+        {
+            rigidbody.useGravity = false;
+        }
+
         if (colliderTag == "Landing")
         {
             ProcessSuccess();
