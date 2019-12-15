@@ -133,7 +133,7 @@ public class Rocket : MonoBehaviour
 
         if (colliderTag == "Target")
         {
-            rigidbody.useGravity = false;
+            ProcessSuccess();   
         }
 
         if (colliderTag == "Landing")
@@ -171,11 +171,16 @@ public class Rocket : MonoBehaviour
 
     private void ProcessSuccess()
     {
+        rigidbody.useGravity = false;
         state = State.Transcending;
-        Invoke("LoadNextScene", 1f);
+        //Invoke("LoadNextScene", 1f);
+        rigidbody.transform.localScale = new Vector3(0, 0, 0);
 
         audioSource.Stop();
         audioSource.PlayOneShot(successClip);
+
+        thrustParticle_left.Stop();
+        thrustParticle_right.Stop();
 
         successParticle.Play();
     }
