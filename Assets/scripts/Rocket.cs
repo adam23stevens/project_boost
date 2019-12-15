@@ -49,7 +49,7 @@ public class Rocket : MonoBehaviour
     private bool isThrustingUp =>
         Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D);
 
-    private bool IsPlayingBack;
+    public bool IsPlayingBack;
 
     // Start is called before the first frame update
     void Start()
